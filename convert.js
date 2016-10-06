@@ -1,4 +1,8 @@
-//Converts the date
+/*
+Convert module converts dates from one form to another.
+convert.unixtonatural(unix in seconds) returns a natural date
+convert.naturaltounix(natural) returns a unix date in seconds
+*/
 var convert = {
   year: 0,
 
@@ -24,7 +28,8 @@ var convert = {
   unixtonatural: function(unix){
     this.unix = unix;
     this.year = Math.floor((this.unix / 31557600) + 1970);
-    this.day = Math.floor((this.unix % 31557600) / 86400);
+    this.day = Math.ceil((this.unix % 31557600) / 86400);
+    console.log(Math.ceil((this.unix % 31557600)/86400));
     if(this.year % 4 == 0){
       this.isleap = true;
     }
@@ -34,21 +39,21 @@ var convert = {
 
     if(this.isleap == true){
       for(var i = 0; i <= 11; i++){
-        if(this.moty.leap[i] <= this.day){
+        if(this.day <= this.moty.leap[i]){
           this.moty.monthindex = i;
         }
       }
       this.month = this.moty.month[this.moty.monthindex];
-      this.dom = this.day - this.moty.leap[this.moty.monthindex - 1] + 1;
+      this.dom = this.day - this.moty.leap[this.moty.monthindex] + 1;
     }
     else{
       for(var i = 0; i <= 12; i++){
-        if(this.moty.noleap[i] <= this.day){
+        if(this.day <= this.moty.noleap[i]){
           this.moty.monthindex = i;
         }
       }
       this.month = this.moty.month[this.moty.monthindex];
-      this.dom = this.day - this.moty.noleap[this.moty.monthindex - 1] + 1;
+      this.dom = this.day - this.moty.noleap[this.moty.monthindex] + 1;
     };
 
     this.natural = this.month + " " + this.dom + ", " + this.year;

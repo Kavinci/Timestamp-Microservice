@@ -18,7 +18,8 @@ var timestamp = {
   isunix: function(){
     if(this.unixregex.test(this.res.unix) == true){
       this.isunixvar = true;
-      console.log("isunix: " + this.res);
+      console.log("isunix: " + this.res.unix + " : " + this.res.natural);
+      console.log("isunix: " + this.isunixvar + " : " + this.isnaturalvar);
       if(this.isnaturalvar == false){
         this.res.natural = this.res.unix.toUTCString();
         this.isnatural();
@@ -36,8 +37,9 @@ var timestamp = {
   isnatural: function(){
     if(Date.parse(this.res.natural) != NaN){
       this.isnaturalvar = true;
-      console.log("isnatural: " + this.res);
-      if(this.isunix == false){
+      console.log("isnatural: " + this.res.unix + " : " + this.res.natural);
+      console.log("isnatural: " + this.isunixvar + " : " + this.isnaturalvar);
+      if(this.isunixvar == false){
         this.res.unix = Date.parse(this.res.natural);
         this.isunix();
       }
@@ -49,7 +51,7 @@ var timestamp = {
 
 //Controls response from server
   response: function(){
-    if(this.isunixvar == true && this.isnaturalvar == true){
+    if(this.isunixvar === true && this.isnaturalvar === true){
       return this.res;
     }
     else{
@@ -65,6 +67,13 @@ var timestamp = {
     this.isnatural();
     this.isunix();//redundant check to be sure
     return this.response();
+  },
+
+//Resets the variables for the next call
+  reset: function(){
+    this.isunixvar = false;
+    this.isnaturalvar = false;
+    this.res = Object.create(this.nullres);
   }
 };
 
@@ -74,6 +83,7 @@ app.get('/:date', function(req, res){
 
   res.json(timestamp.dateparse(req.params.date));
   res.end();
+  timestamp.reset();
    });
 
 //Initiates server on specified port

@@ -63,7 +63,6 @@ var convert = {
   naturaltounix: function(natural){
     this.natural = natural;
     this.unix = Date.parse(this.natural)/1000;
-    console.log("convert.naturaltounix: " + this.unix + " : " + this.natural);
     return this.unix;
   }
 };

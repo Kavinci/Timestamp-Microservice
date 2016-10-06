@@ -5,7 +5,7 @@ timestamp or a natural language date. If the string is either of these then
 a unix timestamp and a natural language date are returned. If neither of 
 these is sent then null is returned for both properties.
 
-The working file for this project is <a href="https://github.com/Kavinci/Timestamp-Microservice/blob/master/timestamp.js">timestamp.js</a>. This project also uses
+The working file for this project is <a href="https://github.com/Kavinci/Timestamp-Microservice/blob/master/timestamp.js">timestamp.js</a> and the date conversion is done in a<a href="https://github.com/Kavinci/Timestamp-Microservice/blob/master/convert.js"> custom module</a>. This project also uses
 node.js and express.js as stated in the basecamp challenge from Free Code Camp:
 
 https://www.freecodecamp.com/challenges/timestamp-microservice

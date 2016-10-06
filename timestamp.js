@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var convert = require('./convert.js');
 var timestamp = {
 
 //Unchanging null object for response
@@ -9,19 +10,21 @@ var timestamp = {
   res: {unix: null, natural: null},
 
 //Regular expression for a 10 digit number assumed to be a unix format timestamp
-  unixregex: /[0-9]{10}/,
+  unixregex: /\D|\s/gi,
+
+  naturalregex: /\D\s/gi,
 
 //Variable to tell whether the current value is unix format
   isunixvar: false,
 
 //Checks the unix value for unix format
   isunix: function(){
-    if(this.unixregex.test(this.res.unix) == true){
+    if(this.unixregex.test(this.res.unix) == false){
       this.isunixvar = true;
       console.log("isunix: " + this.res.unix + " : " + this.res.natural);
       console.log("isunix: " + this.isunixvar + " : " + this.isnaturalvar);
       if(this.isnaturalvar == false){
-        this.res.natural = this.res.unix.toUTCString();
+        this.res.natural = convert.unixtonatural(this.res.unix);
         this.isnatural();
       }
     }
@@ -35,12 +38,13 @@ var timestamp = {
 
 //Checks natural value for natural properties
   isnatural: function(){
-    if(Date.parse(this.res.natural) != NaN){
+    if(this.naturalregex.test(this.res.natural) == true){
       this.isnaturalvar = true;
       console.log("isnatural: " + this.res.unix + " : " + this.res.natural);
       console.log("isnatural: " + this.isunixvar + " : " + this.isnaturalvar);
       if(this.isunixvar == false){
-        this.res.unix = Date.parse(this.res.natural);
+        this.res.unix = convert.naturaltounix(this.res.natural);
+        console.log("isnatural from convert" + this.res.unix + " = " + convert.unix);
         this.isunix();
       }
     }
@@ -51,7 +55,7 @@ var timestamp = {
 
 //Controls response from server
   response: function(){
-    if(this.isunixvar === true && this.isnaturalvar === true){
+    if(this.isunixvar == true && this.isnaturalvar == true){
       return this.res;
     }
     else{
@@ -64,8 +68,9 @@ var timestamp = {
     this.res.unix = date;
     this.res.natural = date;
 
+    this.isunix();
+    //redundant check to be sure
     this.isnatural();
-    this.isunix();//redundant check to be sure
     return this.response();
   },
 
@@ -79,8 +84,6 @@ var timestamp = {
 
 //Express server creation
 app.get('/:date', function(req, res){
-
-
   res.json(timestamp.dateparse(req.params.date));
   res.end();
   timestamp.reset();

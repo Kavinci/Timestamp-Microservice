@@ -88,4 +88,4 @@ app.get('/:date', function(req, res){
    });
 
 //Initiates server on specified port
-app.listen(8080);
+app.listen(80);
